@@ -165,6 +165,7 @@ class CrashInfo():
             return c
 
         asanString = "ERROR: AddressSanitizer:"
+        asanCheckFailedString = "AddressSanitizer CHECK failed:"
         gdbString = " received signal SIG"
         gdbCoreString = "Program terminated with signal "
         ubsanString = "SUMMARY: AddressSanitizer: undefined-behavior"
@@ -186,7 +187,7 @@ class CrashInfo():
         for line in lines:
             if ubsanString in line:
                 return UBSanCrashInfo(stdout, stderr, configuration, auxCrashData)
-            elif asanString in line:
+            elif asanString in line or asanCheckFailedString in line:
                 return ASanCrashInfo(stdout, stderr, configuration, auxCrashData)
             elif appleString in line:
                 return AppleCrashInfo(stdout, stderr, configuration, auxCrashData)
@@ -484,10 +485,12 @@ class ASanCrashInfo(CrashInfo):
                                        |memcpy-param-overlap:\smemory\sranges\s\[) # Bad memcpy
                                    \s*0x([0-9a-f]+)"""
         asanRegisterPattern = r"(?:\s+|\()pc\s+0x([0-9a-f]+)\s+(sp|bp)\s+0x([0-9a-f]+)\s+(sp|bp)\s+0x([0-9a-f]+)"
+        asanCheckFailedString = "AddressSanitizer CHECK failed:"
 
         expectedIndex = 0
+        checkFailure = False
         for traceLine in asanOutput:
-            if self.crashAddress == None:
+            if self.crashAddress == None and not checkFailure:
                 match = re.search(asanCrashAddressPattern, traceLine)
 
                 if match != None:
@@ -502,7 +505,12 @@ class ASanCrashInfo(CrashInfo):
                     else:
                         # We might be dealing with one of the few ASan traces that don't emit registers
                         pass
-                continue  # Not in the ASan output yet. Some lines in eg. debug+asan builds might error if we continue.
+                elif asanCheckFailedString in traceLine:
+                    # This is a failure in ASan itself.
+                    # There isn't a real crash address, but we want a backtrace for bucketing.
+                    checkFailure = True
+                else:
+                    continue  # Not in the ASan output yet. Some lines in eg. debug+asan builds might error if we continue.
 
             parts = traceLine.strip().split()
 

@@ -148,6 +148,13 @@ asanTraceMemcpyOverlap = """
     #1 0x7f47a81e9260 in S32_Opaque_BlitRow32(unsigned int*, unsigned int const*, int, unsigned int) /home/worker/workspace/build/src/gfx/skia/skia/src/core/SkBlitRow_D32.cpp:20:5
 """
 
+asanTraceCheckFailedMmap = """
+==18625==AddressSanitizer CHECK failed: /builds/slave/moz-toolchain/src/llvm/projects/compiler-rt/lib/sanitizer_common/sanitizer_common.cc:183 "((0 && "unable to mmap")) != (0)" (0x0, 0x0)
+    #0 0x4bbf1d in __asan::AsanCheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) /builds/slave/moz-toolchain/src/llvm/projects/compiler-rt/lib/asan/asan_rtl.cc:67:3
+    #1 0x4bfe4f in CheckFailed /builds/slave/moz-toolchain/src/llvm/projects/compiler-rt/lib/sanitizer_common/sanitizer_common.cc:159:5
+    #2 0x4bfe4f in __sanitizer::ReportMmapFailureAndDie(unsigned long, char const*, char const*, int, bool) /builds/slave/moz-toolchain/src/llvm/projects/compiler-rt/lib/sanitizer_common/sanitizer_common.cc:183
+"""
+
 gdbCrashAddress1 = """
 (gdb) bt 16
 #0  js::types::TypeObject::addProperty (this=0xf7469400, cx=0x9366458, id=$jsid(0x0), pprop=0xf7469418) at /srv/repos/mozilla-central/js/src/jsinfer.cpp:3691
@@ -534,6 +541,18 @@ class ASanParserTestMemcpyOverlap(unittest.TestCase):
         self.assertEqual(crashInfo.backtrace[0], "__asan_memcpy")
         self.assertEqual(crashInfo.backtrace[1], "S32_Opaque_BlitRow32")
         self.assertEqual("AddressSanitizer: memcpy-param-overlap: memory ranges overlap [@ __asan_memcpy]", crashInfo.createShortSignature())
+
+class ASanParserTestCheckFailedMmap(unittest.TestCase):
+    def runTest(self):
+        config = ProgramConfiguration("test", "x86-64", "linux")
+
+        crashInfo = ASanCrashInfo([], asanTraceCheckFailedMmap.splitlines(), config)
+        self.assertEqual(crashInfo.crashAddress, None)
+        self.assertEqual(len(crashInfo.backtrace), 3)
+        self.assertEqual(crashInfo.backtrace[0], "__asan::AsanCheckFailed")
+        self.assertEqual(crashInfo.backtrace[1], "CheckFailed")
+        self.assertEqual(crashInfo.backtrace[2], "__sanitizer::ReportMmapFailureAndDie")
+        self.assertEqual("AddressSanitizer CHECK failed: /builds/slave/moz-toolchain/src/llvm/projects/compiler-rt/lib/sanitizer_common/sanitizer_common.cc:183 \"((0 && \"unable to mmap\")) != (0)\" (0x0, 0x0) [@ __asan::AsanCheckFailed]", crashInfo.createShortSignature())
 
 class GDBParserTestCrash(unittest.TestCase):
     def runTest(self):

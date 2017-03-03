@@ -102,6 +102,9 @@ def getAuxiliaryAbortMessage(output):
             lastLine = [ lastLine ]
             lastLine.append(line)
             needASanRW = False
+        elif "AddressSanitizer CHECK failed:" in line:
+            line = re.sub("^[0-9=]+", "", line)
+            lastLine = line.strip()
         elif "glibc detected" in line:
             # Aborts caused by glibc runtime error detection
             lastLine = line
