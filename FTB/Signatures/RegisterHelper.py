@@ -11,6 +11,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 @contact:    choller@mozilla.com
 '''
+import itertools
 
 x86Registers = [ "eax", "ebx", "ecx", "edx", "esi", "edi", "ebp", "esp", "eip" ]
 
@@ -32,7 +33,7 @@ def getRegisterPattern():
     '''
         Return a pattern including all register names that are considered valid
     '''
-    return "(" + '|'.join(["%s"] * len(validRegisters.values())) % tuple(['|'.join(i) for i in validRegisters.values()]) + ")"
+    return "(" + '|'.join(itertools.chain.from_iterable(validRegisters.values())) + ")"
 
 def getStackPointer(registerMap):
     '''

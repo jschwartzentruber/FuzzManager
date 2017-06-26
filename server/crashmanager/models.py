@@ -152,11 +152,11 @@ class CrashEntry(models.Model):
             self.args = json.dumps(self.argsList)
 
         if self.envList:
-            envDict = dict([x.split("=", 1) for x in self.envList])
+            envDict = dict(x.split("=", 1) for x in self.envList)
             self.env = json.dumps(envDict)
 
         if self.metadataList:
-            metadataDict = dict([x.split("=", 1) for x in self.metadataList])
+            metadataDict = dict(x.split("=", 1) for x in self.metadataList)
             self.metadata = json.dumps(metadataDict)
 
         # When we have a crash address, keep the numeric crash address field in
@@ -180,11 +180,11 @@ class CrashEntry(models.Model):
 
         if self.env:
             envDict = json.loads(self.env)
-            self.envList = ["%s=%s" % (s, envDict[s]) for s in envDict.keys()]
+            self.envList = ["%s=%s" % x for x in envDict.items()]
 
         if self.metadata:
             metadataDict = json.loads(self.metadata)
-            self.metadataList = ["%s=%s" % (s, metadataDict[s]) for s in metadataDict.keys()]
+            self.metadataList = ["%s=%s" % x for x in metadataDict.items()]
 
 
     def getCrashInfo(self, attachTestcase=False):

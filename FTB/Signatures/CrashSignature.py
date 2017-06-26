@@ -42,7 +42,7 @@ class CrashSignature():
 
         try:
             obj = json.loads(rawSignature, object_pairs_hook=OrderedDict)
-        except ValueError, e:
+        except ValueError as e:
             raise RuntimeError("Invalid JSON: %s" % e)
 
         # Get the symptoms objects (mandatory)
@@ -93,7 +93,7 @@ class CrashSignature():
         for symptom in self.symptoms:
             # We want to defer matching Testcase and Output symptoms as they can be slow
             # and pretty much all other symptoms are instant in matching.
-            if isinstance(symptom, TestcaseSymptom) or isinstance(symptom, OutputSymptom):
+            if isinstance(symptom, (TestcaseSymptom, OutputSymptom)):
                 deferredSymptoms.append(symptom)
                 continue
 

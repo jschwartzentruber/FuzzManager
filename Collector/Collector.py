@@ -636,7 +636,7 @@ def main():
 
         if "env" in retJSON and retJSON["env"]:
             env = json.loads(retJSON["env"])
-            print("Environment variables: %s", " ".join([ "%s = %s" % (k, v) for (k, v) in env.items()]))
+            print("Environment variables: %s", " ".join("%s = %s" % x for x in env.items()))
             print("")
 
         if "metadata" in retJSON and retJSON["metadata"]:

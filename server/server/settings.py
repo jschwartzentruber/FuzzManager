@@ -28,7 +28,7 @@ except:
         with open(SECRET_FILE, 'w') as f:
             import random
             chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-            SECRET_KEY = ''.join([random.choice(chars) for i in range(64)])
+            SECRET_KEY = ''.join(random.choice(chars) for _ in range(64))
             f.write(SECRET_KEY)
     except IOError:
         raise Exception('Cannot open file "%s" for writing.' % SECRET_FILE) 

@@ -484,7 +484,7 @@ def deleteCrashEntry(request, crashid):
     elif request.method == 'GET':
         return render(request, 'crashes/remove.html', { 'entry' : entry })
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 def __handleSignaturePost(request, bucket):
     # This method contains code shared between newSignature and editSignature
@@ -603,7 +603,7 @@ def newSignature(request):
         else:
             data = { 'new' : True }
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
     return render(request, 'signatures/edit.html', data)
 
@@ -611,7 +611,7 @@ def newSignature(request):
 def deleteSignature(request, sigid):
     bucket = Bucket.objects.filter(pk=sigid).annotate(size=Count('crashentry'))
     if not bucket:
-        raise Http404
+        raise Http404()
     bucket = bucket[0]
 
     check_authorized_for_signature(request, bucket)
@@ -627,14 +627,14 @@ def deleteSignature(request, sigid):
     elif request.method == 'GET':
         return render(request, 'signatures/remove.html', { 'bucket' : bucket })
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def viewSignature(request, sigid):
     bucket = Bucket.objects.filter(pk=sigid).annotate(size=Count('crashentry'), quality=Min('crashentry__testcase__quality'))
 
     if not bucket:
-        raise Http404
+        raise Http404()
 
     bucket = bucket[0]
 
@@ -674,9 +674,9 @@ def editSignature(request, sigid):
 
             return render(request, 'signatures/edit.html', { 'bucket' : bucket })
         else:
-            raise SuspiciousOperation
+            raise SuspiciousOperation()
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def linkSignature(request, sigid):
@@ -722,7 +722,7 @@ def linkSignature(request, sigid):
     elif request.method == 'GET':
         return render(request, 'signatures/link.html', data)
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def unlinkSignature(request, sigid):
@@ -736,7 +736,7 @@ def unlinkSignature(request, sigid):
     elif request.method == 'GET':
         return render(request, 'signatures/unlink.html', { 'bucket' : bucket })
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def trySignature(request, sigid, crashid):
@@ -911,7 +911,7 @@ def findSignatures(request, crashid):
                 # Only include the bucket in our results if the number of matches in other buckets is below
                 # out limit. Otherwise, it will just distract the user.
                 if matchesInOtherBuckets <= 5:
-                    bucket.linkToOthers = ",".join([str(x) for x in otherMatchingBucketIds])
+                    bucket.linkToOthers = ",".join(str(x) for x in otherMatchingBucketIds)
                     similarBuckets.append(bucket)
 
     if matchingBucket:
@@ -953,7 +953,7 @@ def createExternalBug(request, crashid):
 
         return provider.getInstance().renderContextCreate(request, entry)
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def createExternalBugComment(request, crashid):
@@ -973,7 +973,7 @@ def createExternalBugComment(request, crashid):
 
         return provider.getInstance().renderContextComment(request, entry)
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def createBugTemplate(request, providerId):
@@ -986,7 +986,7 @@ def createBugTemplate(request, providerId):
     elif request.method == 'GET':
         return provider.getInstance().renderContextCreateTemplate(request)
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def viewEditBugTemplate(request, providerId, templateId, mode):
@@ -1020,14 +1020,14 @@ def deleteBugProvider(request, providerId):
     elif request.method == 'GET':
         return render(request, 'providers/remove.html', { 'provider' : provider })
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def viewBugProvider(request, providerId):
     provider = BugProvider.objects.filter(pk=providerId).annotate(size=Count('bug'))
 
     if not provider:
-        raise Http404
+        raise Http404()
 
     provider = provider[0]
 
@@ -1053,7 +1053,7 @@ def editBugProvider(request, providerId):
     elif request.method == 'GET':
         return render(request, 'providers/edit.html', { 'provider' : provider })
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def createBugProvider(request):
@@ -1072,7 +1072,7 @@ def createBugProvider(request):
     elif request.method == 'GET':
         return render(request, 'providers/edit.html', {})
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 @login_required(login_url='/login/')
 def userSettings(request):
@@ -1115,13 +1115,13 @@ def userSettings(request):
             user.save()
             data = createUserSettingsData(user, msg="Default provider/template updated successfully.")
         else:
-            raise SuspiciousOperation
+            raise SuspiciousOperation()
 
         return render(request, 'usersettings.html', data)
     elif request.method == 'GET':
         return render(request, 'usersettings.html', createUserSettingsData(user))
     else:
-        raise SuspiciousOperation
+        raise SuspiciousOperation()
 
 class JsonQueryFilterBackend(filters.BaseFilterBackend):
     """
@@ -1169,7 +1169,7 @@ class CrashEntryViewSet(mixins.CreateModelMixin,
         try:
             obj = CrashEntry.objects.get(pk=pk)
         except CrashEntry.DoesNotExist:
-            raise Http404
+            raise Http404()
         given_fields = set(request.DATA.keys())
         disallowed_fields = given_fields - allowed_fields
         if disallowed_fields:

@@ -28,6 +28,6 @@ def listcsv(value):
 @register.filter
 def dictcsv(value):
     if value:
-        return ", ".join(["%s=%s" % x for x in value.items()])
+        return ", ".join("%s=%s" % x for x in value.items())
     else:
         return ""
