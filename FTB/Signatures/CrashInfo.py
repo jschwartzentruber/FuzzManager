@@ -377,7 +377,7 @@ class CrashInfo():
         if includeCrashAddress:
             if self.crashAddress == None:
                 crashAddress = ""
-            elif self.crashAddress != 0L and self.crashAddress < 0x100L:
+            elif self.crashAddress != 0 and self.crashAddress < 0x100:
                 # Try to match crash addresses that are small but non-zero
                 # with a generic range that is likely associated with null-deref.
                 crashAddress = "< 0x100"
@@ -903,7 +903,7 @@ class GDBCrashInfo(CrashInfo):
         def calculateDerefOpAddress(derefOp):
             match = re.match("\*?((?:\\-?0x[0-9a-f]+)?)\\(%([a-z0-9]+)\\)", derefOp)
             if match != None:
-                offset = 0L
+                offset = 0
                 if len(match.group(1)):
                     offset = long(match.group(1), 16)
 
@@ -1048,7 +1048,7 @@ class GDBCrashInfo(CrashInfo):
 
         match = re.match("((?:\\-?0x[0-9a-f]+)?)\\(%([a-z0-9]+),%([a-z0-9]+),([0-9]+)\\)", complexDerefOp)
         if match != None:
-            offset = 0L
+            offset = 0
             if len(match.group(1)) > 0:
                 offset = long(match.group(1), 16)
 

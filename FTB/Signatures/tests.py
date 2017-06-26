@@ -503,10 +503,10 @@ class ASanParserTestCrash(unittest.TestCase):
         self.assertEqual(crashInfo.backtrace[3], "js::CallJSNative")
         self.assertEqual(crashInfo.backtrace[6], "js::jit::DoCallFallback")
 
-        self.assertEqual(crashInfo.crashAddress, 0x00000014L)
-        self.assertEqual(crashInfo.registers["pc"], 0x0810845fL)
-        self.assertEqual(crashInfo.registers["sp"], 0xffc57860L)
-        self.assertEqual(crashInfo.registers["bp"], 0xffc57f18L)
+        self.assertEqual(crashInfo.crashAddress, 0x00000014)
+        self.assertEqual(crashInfo.registers["pc"], 0x0810845f)
+        self.assertEqual(crashInfo.registers["sp"], 0xffc57860)
+        self.assertEqual(crashInfo.registers["bp"], 0xffc57f18)
 
 class ASanParserTestHeapCrash(unittest.TestCase):
     def runTest(self):
@@ -515,10 +515,10 @@ class ASanParserTestHeapCrash(unittest.TestCase):
         crashInfo = ASanCrashInfo([], asanTraceHeapCrash.splitlines(), config)
         self.assertEqual(len(crashInfo.backtrace), 1)
 
-        self.assertEqual(crashInfo.crashAddress, 0x00000019L)
-        self.assertEqual(crashInfo.registers["pc"], 0xf718072eL)
-        self.assertEqual(crashInfo.registers["sp"], 0xff87d130L)
-        self.assertEqual(crashInfo.registers["bp"], 0x000006a1L)
+        self.assertEqual(crashInfo.crashAddress, 0x00000019)
+        self.assertEqual(crashInfo.registers["pc"], 0xf718072e)
+        self.assertEqual(crashInfo.registers["sp"], 0xff87d130)
+        self.assertEqual(crashInfo.registers["bp"], 0x000006a1)
 
         self.assertEqual(crashInfo.createShortSignature(), "[@ ??]")
 
@@ -531,7 +531,7 @@ class ASanParserTestUAF(unittest.TestCase):
         self.assertEqual(crashInfo.backtrace[0], "void mozilla::PodCopy<char16_t>")
         self.assertEqual(crashInfo.backtrace[4], "JSFunction::native")
 
-        self.assertEqual(crashInfo.crashAddress, 0x7fd766c42800L)
+        self.assertEqual(crashInfo.crashAddress, 0x7fd766c42800)
 
         self.assertEqual("AddressSanitizer: heap-use-after-free [@ void mozilla::PodCopy<char16_t>] with READ of size 6143520", crashInfo.createShortSignature())
 
@@ -543,7 +543,7 @@ class ASanParserTestInvalidFree(unittest.TestCase):
         self.assertEqual(len(crashInfo.backtrace), 1)
         self.assertEqual(crashInfo.backtrace[0], "__interceptor_free")
 
-        self.assertEqual(crashInfo.crashAddress, 0x62a00006c200L)
+        self.assertEqual(crashInfo.crashAddress, 0x62a00006c200)
 
         self.assertEqual("AddressSanitizer: attempting free on address which was not malloc()-ed [@ __interceptor_free]", crashInfo.createShortSignature())
 
@@ -556,7 +556,7 @@ class ASanParserTestDebugAssertion(unittest.TestCase):
         self.assertEqual(crashInfo.backtrace[0], "nsCycleCollector::CollectWhite")
         self.assertEqual(crashInfo.backtrace[6], "mozilla::DefaultDelete<ScopedXPCOMStartup>::operator()")
 
-        self.assertEqual(crashInfo.crashAddress, 0x0L)
+        self.assertEqual(crashInfo.crashAddress, 0x0)
 
         self.assertEqual("Assertion failure: false (An assert from the graphics logger), at /builds/slave/m-cen-l64-asan-d-0000000000000/build/src/gfx/2d/Logging.h:521", crashInfo.createShortSignature())
 
@@ -575,7 +575,7 @@ class ASanParserTestMemcpyOverlap(unittest.TestCase):
         config = ProgramConfiguration("test", "x86-64", "linux")
 
         crashInfo = ASanCrashInfo([], asanTraceMemcpyOverlap.splitlines(), config)
-        self.assertEqual(crashInfo.crashAddress, 0x7f47486b18f8L)
+        self.assertEqual(crashInfo.crashAddress, 0x7f47486b18f8)
         self.assertEqual(len(crashInfo.backtrace), 2)
         self.assertEqual(crashInfo.backtrace[0], "__asan_memcpy")
         self.assertEqual(crashInfo.backtrace[1], "S32_Opaque_BlitRow32")
@@ -591,9 +591,9 @@ class GDBParserTestCrash(unittest.TestCase):
         self.assertEqual(crashInfo.backtrace[2], "js::ion::MPhi::addInput")
         self.assertEqual(crashInfo.backtrace[6], "processCfgStack")
 
-        self.assertEqual(crashInfo.registers["eax"], 0x0L)
-        self.assertEqual(crashInfo.registers["ebx"], 0x8962ff4L)
-        self.assertEqual(crashInfo.registers["eip"], 0x818bc33L)
+        self.assertEqual(crashInfo.registers["eax"], 0x0)
+        self.assertEqual(crashInfo.registers["ebx"], 0x8962ff4)
+        self.assertEqual(crashInfo.registers["eip"], 0x818bc33)
 
 class GDBParserTestCrashAddress(unittest.TestCase):
     def runTest(self):
@@ -603,45 +603,45 @@ class GDBParserTestCrashAddress(unittest.TestCase):
         crashInfo2 = GDBCrashInfo([], gdbCrashAddress2.splitlines(), config)
         crashInfo3 = GDBCrashInfo([], gdbCrashAddress3.splitlines(), config)
 
-        self.assertEqual(crashInfo1.crashAddress, 0x1L)
+        self.assertEqual(crashInfo1.crashAddress, 0x1)
         self.assertEqual(crashInfo2.crashAddress, None)
-        self.assertEqual(crashInfo3.crashAddress, 0xffffffffffffffa0L)
+        self.assertEqual(crashInfo3.crashAddress, 0xffffffffffffffa0)
 
 class GDBParserTestCrashAddressSimple(unittest.TestCase):
     def runTest(self):
         registerMap64 = {}
-        registerMap64["rax"] = 0x0L
-        registerMap64["rbx"] = -1L
-        registerMap64["rsi"] = 0xde6e5L
-        registerMap64["rdi"] = 0x7ffff6543238L
+        registerMap64["rax"] = 0x0
+        registerMap64["rbx"] = -1
+        registerMap64["rsi"] = 0xde6e5
+        registerMap64["rdi"] = 0x7ffff6543238
 
         registerMap32 = {}
-        registerMap32["eax"] = 0x0L
-        registerMap32["ebx"] = -1L
-        registerMap32["ecx"] = 0xf75fffb8L
+        registerMap32["eax"] = 0x0
+        registerMap32["ebx"] = -1
+        registerMap32["ecx"] = 0xf75fffb8
 
         # Simple tests
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %rbx,0x10(%rax)", registerMap64), 0x10L)
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %ebx,0x10(%eax)", registerMap32), 0x10L)
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %rbx,0x10(%rax)", registerMap64), 0x10)
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %ebx,0x10(%eax)", registerMap32), 0x10)
 
 
         # Overflow tests
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %rax,0x10(%rbx)", registerMap64), 0xFL)
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %eax,0x10(%ebx)", registerMap32), 0xFL)
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %rax,0x10(%rbx)", registerMap64), 0xF)
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %eax,0x10(%ebx)", registerMap32), 0xF)
 
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %rbx,-0x10(%rax)", registerMap64), int64(uint64(0xfffffffffffffff0L)))
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %ebx,-0x10(%eax)", registerMap32), int32(uint32(0xfffffff0L)))
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %rbx,-0x10(%rax)", registerMap64), int64(uint64(0xfffffffffffffff0)))
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    %ebx,-0x10(%eax)", registerMap32), int32(uint32(0xfffffff0)))
 
         # Scalar test
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("movl   $0x7b,0x0", registerMap32), 0x0L)
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("movl   $0x7b,0x0", registerMap32), 0x0)
 
         # Real world examples
         # Note: The crash address here can also be 0xf7600000 because the double quadword
         # move can fail on the second 8 bytes if the source address is not 16-byte aligned
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("movdqu 0x40(%ecx),%xmm4", registerMap32), int32(uint32(0xf75ffff8L)))
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("movdqu 0x40(%ecx),%xmm4", registerMap32), int32(uint32(0xf75ffff8)))
 
         # Again, this is an unaligned access and the crash can be at 0x7ffff6700000 or 0x7ffff6700000 - 4
-        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    -0x4(%rdi,%rsi,2),%eax", registerMap64), int64(uint64(0x7ffff66ffffeL)))
+        self.assertEqual(GDBCrashInfo.calculateCrashAddress("mov    -0x4(%rdi,%rsi,2),%eax", registerMap64), int64(uint64(0x7ffff66ffffe)))
 
 class GDBParserTestRegression1(unittest.TestCase):
     def runTest(self):
@@ -658,7 +658,7 @@ class GDBParserTestCrashAddressRegression2(unittest.TestCase):
 
         crashInfo2 = GDBCrashInfo([], gdbRegressionTrace2.splitlines(), config)
 
-        self.assertEqual(crashInfo2.crashAddress, 0xfffd579cL)
+        self.assertEqual(crashInfo2.crashAddress, 0xfffd579c)
 
 class GDBParserTestCrashAddressRegression3(unittest.TestCase):
     def runTest(self):
@@ -666,7 +666,7 @@ class GDBParserTestCrashAddressRegression3(unittest.TestCase):
 
         crashInfo3 = GDBCrashInfo([], gdbRegressionTrace3.splitlines(), config)
 
-        self.assertEqual(crashInfo3.crashAddress, 0x7fffffffffffL)
+        self.assertEqual(crashInfo3.crashAddress, 0x7fffffffffff)
 
 class GDBParserTestCrashAddressRegression4(unittest.TestCase):
     def runTest(self):
@@ -674,7 +674,7 @@ class GDBParserTestCrashAddressRegression4(unittest.TestCase):
 
         crashInfo4 = GDBCrashInfo([], gdbRegressionTrace4.splitlines(), config)
 
-        self.assertEqual(crashInfo4.crashAddress, 0x0L)
+        self.assertEqual(crashInfo4.crashAddress, 0x0)
 
 class GDBParserTestCrashAddressRegression5(unittest.TestCase):
     def runTest(self):
@@ -682,7 +682,7 @@ class GDBParserTestCrashAddressRegression5(unittest.TestCase):
 
         crashInfo5 = GDBCrashInfo([], gdbRegressionTrace5.splitlines(), config)
 
-        self.assertEqual(crashInfo5.crashAddress, 0xfffd573cL)
+        self.assertEqual(crashInfo5.crashAddress, 0xfffd573c)
 
 class GDBParserTestCrashAddressRegression6(unittest.TestCase):
     def runTest(self):
@@ -690,7 +690,7 @@ class GDBParserTestCrashAddressRegression6(unittest.TestCase):
 
         crashInfo6 = GDBCrashInfo([], gdbRegressionTrace6.splitlines(), config)
 
-        self.assertEqual(crashInfo6.crashAddress, 0xf7673132L)
+        self.assertEqual(crashInfo6.crashAddress, 0xf7673132)
 
 class GDBParserTestCrashAddressRegression7(unittest.TestCase):
     def runTest(self):
@@ -726,7 +726,7 @@ class GDBParserTestCrashAddressRegression10(unittest.TestCase):
 
         crashInfo10 = CrashInfo.fromRawCrashData([], [], config, gdbRegressionTrace10.splitlines())
         self.assertEqual(crashInfo10.crashInstruction, "(bad)")
-        self.assertEqual(crashInfo10.crashAddress, 0x7ff7f20c1f81L)
+        self.assertEqual(crashInfo10.crashAddress, 0x7ff7f20c1f81)
 
 class GDBParserTestCrashAddressRegression11(unittest.TestCase):
     def runTest(self):
@@ -734,7 +734,7 @@ class GDBParserTestCrashAddressRegression11(unittest.TestCase):
 
         crashInfo11 = CrashInfo.fromRawCrashData([], [], config, gdbRegressionTrace11.splitlines())
         self.assertEqual(crashInfo11.crashInstruction, "callq  *0xa8(%rax)")
-        self.assertEqual(crashInfo11.crashAddress, 0x7ff7f2091032L)
+        self.assertEqual(crashInfo11.crashAddress, 0x7ff7f2091032)
 
 class CrashSignatureOutputTest(unittest.TestCase):
     def runTest(self):
@@ -890,19 +890,19 @@ class CrashSignatureStackSizeTest(unittest.TestCase):
 
 class RegisterHelperValueTest(unittest.TestCase):
     def runTest(self):
-        registerMap = { "rax" : 0xfffffffffffffe00L, "rbx" : 0x7ffff79a7640L }
+        registerMap = { "rax" : 0xfffffffffffffe00, "rbx" : 0x7ffff79a7640 }
 
-        self.assertEqual(RegisterHelper.getRegisterValue("rax", registerMap), 0xfffffffffffffe00L)
-        self.assertEqual(RegisterHelper.getRegisterValue("eax", registerMap), 0xfffffe00L)
-        self.assertEqual(RegisterHelper.getRegisterValue("ax", registerMap), 0xfe00L)
-        self.assertEqual(RegisterHelper.getRegisterValue("ah", registerMap), 0xfeL)
-        self.assertEqual(RegisterHelper.getRegisterValue("al", registerMap), 0x0L)
+        self.assertEqual(RegisterHelper.getRegisterValue("rax", registerMap), 0xfffffffffffffe00)
+        self.assertEqual(RegisterHelper.getRegisterValue("eax", registerMap), 0xfffffe00)
+        self.assertEqual(RegisterHelper.getRegisterValue("ax", registerMap), 0xfe00)
+        self.assertEqual(RegisterHelper.getRegisterValue("ah", registerMap), 0xfe)
+        self.assertEqual(RegisterHelper.getRegisterValue("al", registerMap), 0x0)
 
-        self.assertEqual(RegisterHelper.getRegisterValue("rbx", registerMap), 0x7ffff79a7640L)
-        self.assertEqual(RegisterHelper.getRegisterValue("ebx", registerMap), 0xf79a7640L)
-        self.assertEqual(RegisterHelper.getRegisterValue("bx", registerMap), 0x7640L)
-        self.assertEqual(RegisterHelper.getRegisterValue("bh", registerMap), 0x76L)
-        self.assertEqual(RegisterHelper.getRegisterValue("bl", registerMap), 0x40L)
+        self.assertEqual(RegisterHelper.getRegisterValue("rbx", registerMap), 0x7ffff79a7640)
+        self.assertEqual(RegisterHelper.getRegisterValue("ebx", registerMap), 0xf79a7640)
+        self.assertEqual(RegisterHelper.getRegisterValue("bx", registerMap), 0x7640)
+        self.assertEqual(RegisterHelper.getRegisterValue("bh", registerMap), 0x76)
+        self.assertEqual(RegisterHelper.getRegisterValue("bl", registerMap), 0x40)
 
 class MinidumpParserTestCrash(unittest.TestCase):
     def runTest(self):
